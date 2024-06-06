@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:weather/network/home/home_api.dart';
 import 'package:weather/widgets/app_text.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  final HomeAPI _api = HomeAPI();
+  @override
+  void initState() {
+    super.initState();
+    _api.scrapWeatherReport();
+  }
 
   @override
   Widget build(BuildContext context) {
