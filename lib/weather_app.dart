@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather/module/home/view/home_view.dart';
+import 'package:weather/style/app_theme.dart';
 
 class WeatherApp extends StatelessWidget {
   const WeatherApp({super.key});
@@ -9,10 +10,7 @@ class WeatherApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Weather',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: MyTheme().selectedTheme(),
       home: const HomeView(),
     );
   }
