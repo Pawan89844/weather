@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:weather/module/home/view%20model/home_view_model.dart';
 import 'package:weather/module/home/view/home_view.dart';
 import 'package:weather/style/app_theme.dart';
+import 'package:provider/provider.dart';
 
 class WeatherApp extends StatelessWidget {
   const WeatherApp({super.key});
@@ -11,7 +13,10 @@ class WeatherApp extends StatelessWidget {
     return MaterialApp(
       title: 'Weather',
       theme: MyTheme().selectedTheme(),
-      home: const HomeView(),
+      home: ChangeNotifierProvider(
+        create: (context) => HomeViewModel(),
+        child: const HomeView(),
+      ),
     );
   }
 }
