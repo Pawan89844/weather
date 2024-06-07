@@ -14,7 +14,7 @@ class WeatherApp extends StatelessWidget {
       title: 'Weather',
       theme: MyTheme().selectedTheme(),
       home: ChangeNotifierProvider(
-        create: (context) => HomeViewModel(),
+        create: (context) => HomeViewModel()..setWeather(),
         child: const HomeView(),
       ),
     );
