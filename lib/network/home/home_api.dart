@@ -4,14 +4,15 @@ import 'package:weather/network/network.dart';
 import 'package:html/parser.dart';
 
 class HomeAPI extends RESTAPI {
-  Map<String, dynamic> _storeData(
-      List<Element> city, List<Element> temp, List<Element> icon) {
+  Map<String, dynamic> _storeData(List<Element> city, List<Element> temp,
+      List<Element> icon, List<Element> forecast) {
     return {
       'city': city.isNotEmpty ? city[0].text : '',
       'temp': temp.isNotEmpty ? temp[0].text : '',
       'icon': icon.isNotEmpty
           ? '${_APIURL._baseUrl}${icon[0].attributes['data-src']}'
           : '',
+      'hourly_temperature': forecast,
     };
   }
 
@@ -19,7 +20,9 @@ class HomeAPI extends RESTAPI {
     final city = weather.getElementsByClassName(_HTMLClassSelector.city);
     final temp = weather.getElementsByClassName(_HTMLClassSelector.temp);
     final icon = weather.getElementsByClassName(_HTMLClassSelector.icon);
-    final html = _storeData(city, temp, icon);
+    final forecast =
+        weather.getElementsByClassName(_HTMLClassSelector.forecast);
+    final html = _storeData(city, temp, icon, forecast);
     WeatherDataModel realtimeWeather = WeatherDataModel.fromHTML(html);
     return realtimeWeather;
   }
@@ -44,4 +47,5 @@ class _HTMLClassSelector {
   static const String city = 'header-loc';
   static const String temp = 'temp';
   static const String icon = 'weather-icon';
+  static const String forecast = 'hourly-list__list';
 }
