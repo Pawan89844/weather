@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:weather/module/home/view%20model/home_view_model.dart';
+import 'package:weather/service/home/home_api.dart';
 import 'package:weather/widgets/app_text.dart';
 
 class HomeView extends StatefulWidget {
@@ -26,6 +27,7 @@ class _HomeViewState extends State<HomeView> {
           if (value.weather == null) {
             return const Center(child: CircularProgressIndicator());
           } else {
+            HomeAPI().search(value.locality);
             return Column(
               children: [
                 SizedBox.square(
