@@ -1,6 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:weather/module/home/model/weather_data_model.dart';
-import 'package:weather/network/network.dart';
+import 'package:weather/service/network.dart';
 import 'package:html/parser.dart';
 
 class HomeAPI extends RESTAPI {
@@ -35,12 +38,23 @@ class HomeAPI extends RESTAPI {
     }
     return null;
   }
+
+  Future search(String locality) async {
+    final api = await super.get(_APIURL().searchLocation(locality));
+    if (api.statusCode == 200) {
+      log('Body: ${api.body}');
+    }
+  }
 }
 
 class _APIURL {
   static const String _baseUrl = 'https://www.accuweather.com';
   static String getTemperature =
       '$_baseUrl/en/in/faridabad/202446/weather-forecast/202446?city=faridabad';
+
+  String searchLocation(String locality) {
+    return '$_baseUrl/en/search-locations?query=$locality#google_vignette';
+  }
 }
 
 class _HTMLClassSelector {
