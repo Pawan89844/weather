@@ -16,21 +16,21 @@ class WeatherDataModel {
 
   factory WeatherDataModel.fromHTML(Map<String, dynamic> html) {
     var forecast = (html['hourly_temperature'] as List<tag.Element>);
-    List<String> time = _WeatherDataLogic.constructTime(forecast);
-    print('Time: $time');
+    List<TemperatureList> temp = List.generate(
+        forecast.length, (index) => TemperatureList.fromHTML(html));
     return WeatherDataModel(
-      temperature: html['temp'],
-      city: html['city'],
-      weatherIcon: html['icon'],
-    );
+        temperature: html['temp'],
+        city: html['city'],
+        weatherIcon: html['icon'],
+        temperatureList: temp);
   }
 }
 
 class TemperatureList {
-  final String temp;
+  final List<String> temp;
   final String icon;
-  final String time;
-  final Color cardColor;
+  final List<String> time;
+  final List<Color> cardColor;
 
   TemperatureList(
       {required this.temp,
@@ -39,18 +39,23 @@ class TemperatureList {
       required this.cardColor});
 
   factory TemperatureList.fromHTML(Map<String, dynamic> html) {
-    return TemperatureList(
-        temp: html['temp'],
-        icon: html['icon'],
-        time: html['time'],
-        cardColor: Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
+    var forecast = (html['hourly_temperature'] as List<tag.Element>);
+    List<String> time = _WeatherDataLogic.constructTime(forecast);
+    List<Color> colors = List.generate(
+        time.length,
+        (index) => Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
             .withOpacity(1.0));
+    List<String> temperatur = _WeatherDataLogic.constructTemperature(forecast);
+    return TemperatureList(
+        temp: temperatur, icon: html['icon'], time: time, cardColor: colors);
   }
 }
 
+/// [_WeatherDataLogic] class contains all String extraction logic such as Time and Temperature string
 final class _WeatherDataLogic {
   static String _hour = '';
-  static List<String> _data = [];
+  static final List<String> _data = [];
+  static final List<String> _temp = [];
 
   static _modifyString(List<String> newString) {
     for (final element in newString) {
@@ -65,6 +70,14 @@ final class _WeatherDataLogic {
     }
   }
 
+  static _modifyTemp(List<String> newString) {
+    for (final element in newString) {
+      if (element.endsWith('°')) {
+        _temp.add(element);
+      }
+    }
+  }
+
   static List<String> constructTime(List<tag.Element> forecast) {
     for (int i = 0; i < forecast.length; i++) {
       String replacedString =
@@ -73,5 +86,15 @@ final class _WeatherDataLogic {
       _modifyString(newString);
     }
     return _data;
+  }
+
+  static List<String> constructTemperature(List<tag.Element> forecast) {
+    for (int i = 0; i < forecast.length; i++) {
+      String replacedString =
+          forecast[i].text.trim().replaceAll(RegExp(r'\s+'), ' ');
+      List<String> newString = replacedString.split(' ');
+      _modifyTemp(newString);
+    }
+    return _temp;
   }
 }
